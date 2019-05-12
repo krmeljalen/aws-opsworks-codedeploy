@@ -1,0 +1,20 @@
+version: 0.0
+os: linux
+hooks:
+  BeforeInstall:
+    - location: scripts/prepare_server.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: scripts/update_code.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: scripts/start_service.sh
+      timeout: 300
+      runas: root
+  ApplicationStop:
+    - location: scripts/stop_service.sh
+      timeout: 300
+      runas: root
+

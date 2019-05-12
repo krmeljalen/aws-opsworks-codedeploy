@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e -u pipefail
+
+# Config stuff
+S3_BUCKET=$(python config/config.py s3Bucket)
+S3_URL="s3://${S3_BUCKET}"
+
+function error {
+    print "[E] $1"
+}
+
+lib/template-general.py > jsons/general.cfn
+lib/template-infra.py > jsons/infra.cfn
+lib/template-main.py > jsons/main.cfn
+lib/template-network.py > jsons/network.cfn
+
+echo "Finished generating templates"
+
+aws s3 cp --quiet jsons/general.cfn ${S3_URL}/general.cfn >/dev/null || error "Template failed to upload"
+aws s3 cp --quiet jsons/infra.cfn ${S3_URL}/infra.cfn >/dev/null || error "Template failed to upload"
+aws s3 cp --quiet jsons/main.cfn ${S3_URL}/main.cfn >/dev/null || error "Template failed to upload"
+aws s3 cp --quiet jsons/network.cfn ${S3_URL}/network.cfn >/dev/null || error "Template failed to upload"
+
+echo "Finished uploading templates"

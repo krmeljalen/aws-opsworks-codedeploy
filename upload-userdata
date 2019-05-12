@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e -u pipefail
+
+# Config stuff
+S3_BUCKET=$(python config/config.py s3CodeBucket)
+S3_URL="s3://${S3_BUCKET}"
+aws s3 cp --quiet userdata.sh ${S3_URL}/userdata.sh >/dev/null || error "Template failed to upload"

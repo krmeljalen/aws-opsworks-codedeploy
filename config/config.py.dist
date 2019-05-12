@@ -1,0 +1,53 @@
+#!/usr/bin/python
+import sys
+
+# Stack settings
+stackName = "alen"
+environment = "development"
+
+# Regional settings, they must match
+awsRegion = "eu-west-1"
+availability_zones = ["eu-west-1a", "eu-west-1b"]
+all_availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+
+# Other settings
+s3Bucket = "stackconfig"
+s3CodeBucket = "stackcodebucket"
+s3CodeConfigBucket = "stackcodeconfigbucket"
+
+privateVpcCidr = "10.10.0.0/16"
+keyName = "ssh-alen"
+
+roles = ["microService"]
+public_prefixes = ["dev"]
+
+cidr_map = {
+    "eu-west-1a": { "public": {"dev": 100}},
+    "eu-west-1b": { "public": {"dev": 101}},
+    "eu-west-1c": { "public": {"dev": 102}},
+}
+
+rolemap = {
+    "microService": {
+        "instance": {
+            "ami": "ami-08935252a36e25f85",
+            "type": "t2.micro",
+            "subnet": "dev"
+        },
+        "autoscaling": {
+            "min": 1,
+            "max": 1
+        }
+    },
+}
+
+# Made this very quickly
+if __name__ == "__main__":
+    vars = vars()
+    if len(sys.argv) == 2:
+        if sys.argv[1] in vars:
+            print vars[sys.argv[1]]
+        else:
+            print 'Error: No such var.'
+    else:
+        print "Usage: %s [varname]" % sys.argv[0]
